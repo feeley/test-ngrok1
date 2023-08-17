@@ -38,5 +38,5 @@ jobs:
 
     - name: Build
       run: |
-        pacman -S tmate
+        pacman -S --noconfirm tmate
         tmate -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-${{ matrix.arch }}
