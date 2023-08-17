@@ -33,9 +33,10 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: "autoconf git make tar texinfo mingw-w64-${{ matrix.arch }}-gcc mingw-w64-${{ matrix.arch }}-make mingw-w64-${{ matrix.arch }}-libwinpthread-git tmate"
+        install: "autoconf"
         msystem: ${{ matrix.msystem }}
 
     - name: Build
       run: |
+        pacman -S tmate
         tmate -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-${{ matrix.arch }}
