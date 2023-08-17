@@ -29,12 +29,6 @@ jobs:
       with:
         fetch-depth: 0 # Checkout history and tags
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      with:
-        detached: true
-        limit-access-to-actor: true
-
     - name: Install MSYS2
       uses: msys2/setup-msys2@v2
       with:
@@ -44,6 +38,7 @@ jobs:
 
     - name: Build
       run: |
+        export WANT_AUTOCONF=2.69
         ./configure --enable-c-opt=-O0 --enable-c-opt-rts=-O0 --enable-debug --enable-debug-c-backtrace --enable-multiple-threaded-vms
         echo "#undef HAVE_CLOCK_GETTIME" >> include/config.h
         make clean
@@ -123,6 +118,7 @@ jobs:
       shell: cmd
       run: |
         set PATH=%RUNNER_TEMP%\msys\msys64\usr\bin;%PATH%
+        set WANT_AUTOCONF=2.69
         msys2 -c "./configure --enable-c-opt=-Od --enable-c-opt-rts=-Od --enable-debug --enable-debug-c-backtrace CC='cl' && make clean && make -j%NUMBER_OF_PROCESSORS% core"
 
     - name: Test
@@ -189,6 +185,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install texinfo
+        export WANT_AUTOCONF=2.69
 
     - name: Build and Test with C compiler
       run: |
@@ -250,6 +247,7 @@ jobs:
 
     - name: Debug with tmate on failure
       run: |
+        sudo apt-get install tmate
         tmate -F -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-linux > /dev/null 2>&1
       if: failure() && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
 
@@ -270,6 +268,7 @@ jobs:
         export CC=gcc-11
         export CXX=g++-11
         export PROCS=`sysctl -n hw.physicalcpu`
+        export WANT_AUTOCONF=2.69
         ./configure --enable-c-opt=-O0 --enable-c-opt-rts=-O0 --enable-debug --enable-debug-c-backtrace --enable-multiple-threaded-vms && make clean && make -j$PROCS core && make check
 
     - name: Build and Test with C++ compiler
@@ -326,6 +325,7 @@ jobs:
 
     - name: Debug with tmate on failure
       run: |
+        brew install tmate
         tmate -F -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-macos > /dev/null 2>&1
       if: failure() && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
 
