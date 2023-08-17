@@ -38,5 +38,10 @@ jobs:
 
     - name: Build
       run: |
+        foobar
+
+    - name: Debug on failure
+      run: |
         pacman -S --noconfirm tmate
-        tmate -F -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-${{ matrix.arch }}
+        tmate -F -k ${{ secrets.TMATE_API_KEY }} -n ${{ secrets.TMATE_SESSION_PREFIX }}-${{ matrix.msystem }}
+      if: failure() && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
