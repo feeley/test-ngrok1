@@ -1,4 +1,4 @@
-name: test
+name: tmate_test
 
 on:
   pull_request:
